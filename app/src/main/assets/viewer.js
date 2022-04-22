@@ -57,7 +57,7 @@ function display(newCanvas, zoom) {
     canvas.style.width = newCanvas.style.width;
     canvas.getContext("2d", { alpha: false }).drawImage(newCanvas, 0, 0);
     if (!zoom) {
-        scrollTo(0, 0);
+        scrollTo(channel.getScrollX(), channel.getScrollY());
     }
 }
 

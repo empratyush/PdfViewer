@@ -108,6 +108,8 @@ public class PdfViewer extends AppCompatActivity implements LoaderManager.Loader
     public int mPage;
     public int mNumPages;
     private float mZoomRatio = 1f;
+    private float sX = 0f;
+    private float sY = 0f;
     private int mDocumentOrientationDegrees;
     private int mDocumentState;
     private List<CharSequence> mDocumentProperties;
@@ -127,6 +129,16 @@ public class PdfViewer extends AppCompatActivity implements LoaderManager.Loader
         @JavascriptInterface
         public float getZoomRatio() {
             return mZoomRatio;
+        }
+
+        @JavascriptInterface
+        public float getScrollX() {
+            return sX;
+        }
+
+        @JavascriptInterface
+        public float getScrollY() {
+            return sY;
         }
 
         @JavascriptInterface
@@ -271,12 +283,20 @@ public class PdfViewer extends AppCompatActivity implements LoaderManager.Loader
                     }
 
                     @Override
-                    public void onZoomIn(float value) {
+                    public void onZoomIn(float value,float dx, float dy) {
+                        float calculateX = binding.webview.getMeasuredWidth() - dx;
+                        float calculateY = binding.webview.getMeasuredHeight() - dy;
+                        sX = calculateX;
+                        sY = calculateY;
                         zoomIn(value, false);
                     }
 
                     @Override
-                    public void onZoomOut(float value) {
+                    public void onZoomOut(float value,float dx, float dy) {
+                        float calculateX = binding.webview.getMeasuredWidth() - dx;
+                        float calculateY = binding.webview.getMeasuredHeight() - dy;
+                        sX = calculateX;
+                        sY = calculateY;
                         zoomOut(value, false);
                     }
 
