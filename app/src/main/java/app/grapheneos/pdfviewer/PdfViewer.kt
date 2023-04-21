@@ -50,6 +50,7 @@ import java.io.InputStream
 class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSequence>> {
 
     companion object {
+        private const val DOCUMENT_TYPE_PDF = "application/pdf"
         const val TAG = "PdfViewer"
         private const val STATE_URI = "uri"
         private const val STATE_PAGE = "page"
@@ -304,7 +305,7 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
         LoaderManager.getInstance(this)
         val intent = intent
         if (Intent.ACTION_VIEW == intent.action) {
-            if ("application/pdf" != intent.type) {
+            if (DOCUMENT_TYPE_PDF!= intent.type) {
                 snackbar.setText(R.string.invalid_mime_type).show()
                 return
             }
@@ -455,14 +456,14 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
     private fun openDocument() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/pdf"
+        intent.type = DOCUMENT_TYPE_PDF
         openDocumentLauncher.launch(intent)
     }
 
     private fun shareDocument() {
         if (!this::mUri.isInitialized) return
         val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.setDataAndTypeAndNormalize(mUri, "application/pdf")
+        shareIntent.setDataAndTypeAndNormalize(mUri, DOCUMENT_TYPE_PDF)
         shareIntent.putExtra(Intent.EXTRA_STREAM, mUri)
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share)))
@@ -653,7 +654,7 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
     private fun saveDocument() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
         intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "application/pdf"
+        intent.type = DOCUMENT_TYPE_PDF
         intent.putExtra(Intent.EXTRA_TITLE, currentDocumentName)
         saveAsLauncher.launch(intent)
     }
