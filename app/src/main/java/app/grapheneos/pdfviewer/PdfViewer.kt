@@ -58,10 +58,6 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
         private const val STATE_ENCRYPTED_DOCUMENT_PASSWORD = "encrypted_document_password"
         private const val KEY_PROPERTIES = "properties"
         private const val MIN_WEBVIEW_RELEASE = 89
-        private const val MIN_ZOOM_RATIO = 0.5f
-        private const val MAX_ZOOM_RATIO = 1.5f
-        private const val ALPHA_LOW = 130
-        private const val ALPHA_HIGH = 255
         private const val STATE_LOADED = 1
         private const val STATE_END = 2
         private const val PADDING = 10
@@ -473,16 +469,18 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
     }
 
     private fun zoomIn(value: Float, end: Boolean) {
-        if (zoomRatio < MAX_ZOOM_RATIO) {
-            zoomRatio = Math.min(zoomRatio + value, MAX_ZOOM_RATIO)
+        val maxZoomRatio = 1.5f
+        if (zoomRatio < maxZoomRatio) {
+            zoomRatio = Math.min(zoomRatio + value, maxZoomRatio)
             renderPage(if (end) 1 else 2)
             invalidateOptionsMenu()
         }
     }
 
     private fun zoomOut(value: Float, end: Boolean) {
-        if (zoomRatio > MIN_ZOOM_RATIO) {
-            zoomRatio = Math.max(zoomRatio - value, MIN_ZOOM_RATIO)
+        val minZoomRatio = 0.5f
+        if (zoomRatio > minZoomRatio) {
+            zoomRatio = Math.max(zoomRatio - value, minZoomRatio)
             renderPage(if (end) 1 else 2)
             invalidateOptionsMenu()
         }
@@ -645,13 +643,11 @@ class PdfViewer : AppCompatActivity(), LoaderManager.LoaderCallbacks<List<CharSe
     }
 
     private fun enableDisableMenuItem(item: MenuItem, enable: Boolean) {
-        if (enable) {
-            item.isEnabled = true
-            item.icon!!.alpha = ALPHA_HIGH
-        } else {
-            item.isEnabled = false
-            item.icon!!.alpha = ALPHA_LOW
-        }
+        val alphaLow = 130
+        val alphaHigh = 255
+
+        item.isEnabled = enable
+        item.icon?.alpha = if (enable) alphaHigh else alphaLow
     }
 
     private fun saveDocument() {
